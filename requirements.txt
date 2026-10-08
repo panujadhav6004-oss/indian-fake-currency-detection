@@ -1,0 +1,9 @@
+Django==6.0.5
+django-jazzmin==3.0.4
+joblib==1.5.3
+numpy==1.26.4
+opencv-python==4.9.0.80
+Pillow==10.3.0
+pytesseract==0.3.13
+scikit-learn==1.4.2
+tensorflow==2.16.1

@@ -1,0 +1,29 @@
+# Python environments and caches
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+
+# Local configuration and databases
+.env
+.env.*
+!.env.example
+**/db.sqlite3
+
+# User uploads and training data (may contain private images)
+**/media/
+**/dataset/
+
+# Model artifacts; keep only the model used by the Django detector
+**/*.keras
+**/*.h5
+!fake_currency_web/detector/best_currency_model.keras
+**/*.pkl
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+**/dataset_clean/
