@@ -1,0 +1,86 @@
+/* ===== Background ===== */
+.history-bg {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    min-height: 100vh;
+    padding: 40px;
+}
+
+/* ===== Card ===== */
+.history-card {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.3);
+}
+
+/* ===== Title ===== */
+.page-title {
+    text-align: center;
+    color: white;
+    margin-bottom: 25px;
+    font-size: 32px;
+}
+
+/* ===== Table ===== */
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: white;
+    text-align: center;
+}
+
+.history-table th {
+    background: rgba(255,255,255,0.2);
+    padding: 15px;
+    font-weight: 600;
+}
+
+.history-table td {
+    padding: 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.table-row:hover {
+    background: rgba(255,255,255,0.1);
+    transition: 0.3s;
+}
+
+/* ===== Image ===== */
+.history-img {
+    width: 120px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+/* ===== Badges ===== */
+.badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.real {
+    background: #00c853;
+}
+
+.fake {
+    background: #ff1744;
+}
+
+/* ===== Text styles ===== */
+.confidence {
+    font-weight: bold;
+    color: #ffd54f;
+}
+
+.date {
+    color: #cfd8dc;
+}
+
+.no-data {
+    padding: 25px;
+    font-size: 18px;
+    color: #ddd;
+}
