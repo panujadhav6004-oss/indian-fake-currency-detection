@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment - Fake Currency Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:url("https://images.unsplash.com/photo-1607083206968-13611e3d76db") no-repeat center/cover;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:30px;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.85);
+    z-index:-1;
+}
+
+.payment-card{
+    width:430px;
+    background:rgba(0,0,0,0.78);
+    border:1px solid rgba(0,230,118,0.38);
+    border-radius:18px;
+    padding:30px;
+    box-shadow:0 0 32px rgba(0,255,100,0.28);
+}
+
+h1{
+    color:#ffd600;
+    text-align:center;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#ddd;
+    margin-bottom:24px;
+}
+
+.summary{
+    background:rgba(255,255,255,0.08);
+    border-radius:12px;
+    padding:18px;
+    margin-bottom:22px;
+}
+
+.row{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.row:last-child{
+    margin-bottom:0;
+}
+
+.amount{
+    color:#00e676;
+    font-weight:700;
+}
+
+.method{
+    display:block;
+    margin-bottom:12px;
+    padding:14px;
+    border-radius:12px;
+    background:rgba(255,255,255,0.08);
+    cursor:pointer;
+}
+
+.method input{
+    margin-right:10px;
+}
+
+.field{
+    margin:14px 0;
+}
+
+.field label{
+    display:block;
+    margin-bottom:8px;
+    color:#ffd600;
+    font-weight:600;
+}
+
+.field input{
+    width:100%;
+    padding:12px;
+    border:0;
+    border-radius:10px;
+    outline:none;
+}
+
+.pay-btn{
+    width:100%;
+    padding:13px;
+    margin-top:10px;
+    border:0;
+    border-radius:10px;
+    background:linear-gradient(135deg,#00e676,#ffd600);
+    color:#000;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.back{
+    display:block;
+    margin-top:18px;
+    text-align:center;
+    color:#00e676;
+    text-decoration:none;
+    font-weight:700;
+}
+
+.note{
+    margin-top:16px;
+    color:#ccc;
+    font-size:12px;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="payment-card">
+    <h1>Complete Payment</h1>
+    <p class="subtitle">Activate your subscription plan</p>
+
+    <div class="summary">
+        <div class="row">
+            <span>Plan</span>
+            <strong>{{ label }}</strong>
+        </div>
+        <div class="row">
+            <span>Amount</span>
+            <strong class="amount">Rs {{ amount }}</strong>
+        </div>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <label class="method">
+            <input type="radio" name="payment_method" value="UPI" checked required>
+            UPI Payment
+        </label>
+
+        <div class="field">
+            <label>UPI ID</label>
+            <input type="text" name="upi_id" placeholder="example: name@upi">
+        </div>
+
+        <label class="method">
+            <input type="radio" name="payment_method" value="CARD">
+            Debit / Credit Card
+        </label>
+
+        <label class="method">
+            <input type="radio" name="payment_method" value="NETBANKING">
+            Net Banking
+        </label>
+
+        <button type="submit" class="pay-btn">
+            Pay Rs {{ amount }}
+        </button>
+    </form>
+
+    <p class="note">
+        Demo payment flow: payment is stored as pending, then marked successful after processing.
+    </p>
+
+    <a href="{% url 'dashboard' %}" class="back">
+        Back to Dashboard
+    </a>
+</div>
+
+</body>
+</html>

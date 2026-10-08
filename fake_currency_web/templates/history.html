@@ -1,0 +1,304 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>Detection History</title>
+
+<style>
+body{
+    margin:0;
+    padding:0;
+    font-family:'Poppins',sans-serif;
+    min-height:100vh;
+    background:url("https://images.unsplash.com/photo-1580519542036-c47de6196ba5") no-repeat center center/cover;
+}
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.75);
+    z-index:-1;
+}
+
+/* NAVBAR */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 50px;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(12px);
+}
+.logo{ color:#09eb60; font-size:24px; font-weight:bold; }
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    margin-left:25px;
+    font-size:16px;
+}
+.nav-links a:hover{ color:#00eaff; }
+
+/* GLASS CARD */
+.glass-card{
+    width:92%;
+    max-width:1150px;
+    margin:60px auto;
+    padding:35px;
+    border-radius:20px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(18px);
+    box-shadow:0 8px 40px rgba(0,0,0,0.7);
+}
+.page-title{
+    text-align:center;
+    color:#fff;
+    font-size:38px;
+    margin-bottom:25px;
+}
+
+/* FILTER BAR */
+.filter-bar{
+    text-align:center;
+    margin-bottom:25px;
+}
+.filter-btn{
+    padding:10px 20px;
+    margin:6px;
+    border-radius:25px;
+    text-decoration:none;
+    font-weight:bold;
+    background:#ffffff25;
+    color:white;
+    backdrop-filter:blur(10px);
+}
+.real-btn{ background:#00c853; }
+.fake-btn{ background:#ff5252; }
+.delete-all{
+    background:black;
+    color:white;
+}
+
+/* TABLE */
+.history-table{ width:100%; border-collapse:collapse; }
+.history-table thead{ background:#00eaff; color:black; }
+.history-table th{ padding:16px; font-size:18px; }
+.history-table td{
+    padding:16px;
+    text-align:center;
+    background: rgba(255,255,255,0.06);
+    color:white;
+}
+.history-table tr:hover td{ background: rgba(255,255,255,0.15); }
+
+/* Image */
+.history-img{
+    width:120px;
+    border-radius:12px;
+}
+
+/* Result badge */
+.badge{
+    padding:7px 16px;
+    border-radius:20px;
+    font-weight:bold;
+}
+.real{ background:#00e676; color:#003300; }
+.fake{ background:#ff1744; color:white; }
+
+/* Delete button */
+.delete-btn{
+    background:#ff1744;
+    color:white;
+    padding:6px 12px;
+    border-radius:8px;
+    text-decoration:none;
+}
+
+/* Back button */
+.back-btn{
+    display:block;
+    width:220px;
+    margin:35px auto 0;
+    text-align:center;
+    padding:14px;
+    border-radius:30px;
+    background:#00eaff;
+    color:black;
+    text-decoration:none;
+    font-weight:bold;
+}
+.back-btn:hover{ transform:scale(1.06); }
+
+.no-data{ padding:30px; font-size:20px; color:#ccc; }
+/* ===== MODAL POPUP ===== */
+.modal-overlay{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.75);
+    backdrop-filter:blur(8px);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:999;
+}
+
+.modal-box{
+    width:380px;
+    padding:30px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    box-shadow:0 10px 40px rgba(0,0,0,0.8);
+    text-align:center;
+    animation:popup 0.35s ease;
+}
+
+@keyframes popup{
+    from{ transform:scale(0.7); opacity:0; }
+    to{ transform:scale(1); opacity:1; }
+}
+
+.modal-box h2{
+    color:#fff;
+    margin-bottom:10px;
+}
+
+.modal-box p{
+    color:#ccc;
+    font-size:16px;
+    margin-bottom:25px;
+}
+
+.modal-actions{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+}
+
+.cancel-btn{
+    padding:10px 20px;
+    border:none;
+    border-radius:25px;
+    background:#888;
+    color:white;
+    cursor:pointer;
+}
+
+.confirm-btn{
+    padding:10px 22px;
+    border-radius:25px;
+    background:#ff1744;
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+}
+.confirm-btn:hover{ background:#ff4569; }
+.cancel-btn:hover{ background:#aaa; }
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <div class="logo">💰 Fake Currency Detector</div>
+    <div class="nav-links">
+        <a href="/dashboard/">Dashboard</a>
+        <a href="/detector/">Detect</a>
+        <a href="/logout/">Logout</a>
+    </div>
+</div>
+
+<div class="glass-card">
+<h1 class="page-title">Detection History 📊</h1>
+
+<!-- FILTER + DELETE -->
+<!-- FILTER + SORT + DELETE -->
+<div class="filter-bar">
+    <a href="{% url 'history' %}" class="filter-btn">All</a>
+    <a href="{% url 'history' %}?filter=Real" class="filter-btn real-btn">Real</a>
+    <a href="{% url 'history' %}?filter=Fake" class="filter-btn fake-btn">Fake</a>
+
+    <!-- NEW SORT BUTTONS -->
+    <a href="{% url 'history' %}?sort=new" class="filter-btn">Newest</a>
+    <a href="{% url 'history' %}?sort=old" class="filter-btn">Oldest</a>
+
+    <a href="{% url 'delete_all' %}" 
+   class="filter-btn delete-all"
+   onclick="return confirmDeleteAll();">
+   Delete All
+</a>
+<a href="{% url 'export_pdf' %}" class="filter-btn" style="background:#ff9800;">
+    Export PDF
+</a>
+
+<a href="{% url 'export_excel' %}" class="filter-btn" style="background:#4caf50;">
+    Export Excel
+</a>
+</div>
+
+<table class="history-table">
+<thead>
+<tr>
+    <th>Image</th>
+    <th>Result</th>
+    <th>Confidence</th>
+    <th>Date</th>
+    <th>Delete</th>
+</tr>
+</thead>
+
+<tbody>
+{% for r in records %}
+<tr>
+    <td>
+    {% if r.image %}
+        <img src="{{ r.image.url }}" class="history-img">
+    {% else %}
+        <span style="color:gray;">No Image</span>
+    {% endif %}
+</td>
+
+    <td>
+        {% if r.result == "Real" %}
+            <span class="badge real">REAL</span>
+        {% else %}
+            <span class="badge fake">FAKE</span>
+        {% endif %}
+    </td>
+
+    <td>{{ r.confidence }}%</td>
+
+    <td>
+        {{ r.created_at|date:"d M Y" }} <br>
+        {{ r.created_at|time:"h:i A" }}
+    </td>
+
+    <td>
+        <a href="{% url 'delete_record' r.id %}" 
+   class="delete-btn"
+   onclick="return confirmDeleteSingle();">
+   Delete
+</a>
+    </td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+<a href="/dashboard/" class="back-btn">⬅ Back to Dashboard</a>
+</div>
+<script>
+function confirmDeleteSingle(){
+    return confirm("Are you sure you want to delete this record? 🗑️");
+}
+
+function confirmDeleteAll(){
+    return confirm("WARNING! This will delete ALL history permanently 😱\n\nDo you want to continue?");
+}
+</script>
+</body>
+</html>

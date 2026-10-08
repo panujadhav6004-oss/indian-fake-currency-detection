@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Fake Currency Detection</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+
+    background:url("https://images.unsplash.com/photo-1579621970795-87facc2f976d")
+    no-repeat center/cover;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* DARK OVERLAY */
+
+body::before{
+    content:"";
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.78);
+    z-index:0;
+}
+
+/* CARD */
+
+.card{
+    position:relative;
+    z-index:1;
+
+    width:380px;
+    padding:40px;
+
+    background:rgba(0,0,0,0.72);
+    backdrop-filter:blur(14px);
+
+    border-radius:18px;
+
+    box-shadow:0 0 30px rgba(0,255,100,0.25);
+
+    text-align:center;
+    color:white;
+}
+
+/* HEADINGS */
+
+h1{
+    color:#ffd600;
+    margin-bottom:5px;
+}
+
+h3{
+    margin-bottom:20px;
+    font-weight:300;
+}
+
+/* LABEL */
+
+label{
+    display:block;
+    text-align:left;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+/* INPUTS */
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+
+    border:none;
+    border-radius:8px;
+
+    outline:none;
+}
+
+/* SELECT */
+
+select{
+    width:100%;
+    padding:12px;
+
+    border:none;
+    border-radius:10px;
+
+    background:#1f1f1f;
+    color:white;
+
+    margin-bottom:15px;
+
+    appearance:none;
+    cursor:pointer;
+}
+
+/* BUTTON */
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+
+    border:none;
+    border-radius:8px;
+
+    background:linear-gradient(135deg,#00c853,#ffd600);
+
+    font-weight:bold;
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+}
+
+/* LINK */
+
+a{
+    color:#00e676;
+    text-decoration:none;
+    display:block;
+    margin-top:15px;
+}
+
+a:hover{
+    text-decoration:underline;
+}
+
+/* MESSAGE */
+
+.message{
+    color:#00e676;
+    margin-bottom:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>Fake Currency Detection</h1>
+    <h3>Login</h3>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST" autocomplete="off">
+
+        {% csrf_token %}
+
+        <div class="form-group">
+
+            <label>Select Role</label>
+
+            <select name="role"
+                    required
+                    class="form-control"
+                    autocomplete="off">
+
+                <option value="">-- Select Role --</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+
+            </select>
+
+        </div>
+
+        <input type="text"
+               name="username"
+               placeholder="Username"
+               required
+               autocomplete="off">
+
+        <input type="password"
+               name="password"
+               placeholder="Password"
+               required
+               autocomplete="new-password">
+
+        <button type="submit">Login</button>
+
+    </form>
+
+    <a href="/register/">Create new account</a>
+
+</div>
+
+</body>
+</html>

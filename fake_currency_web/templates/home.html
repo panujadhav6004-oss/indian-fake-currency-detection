@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fake Currency Detector</title>
+    <style>
+        body{
+            font-family: Arial;
+            text-align:center;
+            background: linear-gradient(to right,#11998e,#38ef7d);
+            padding-top:100px;
+        }
+        .box{
+            background:white;
+            padding:40px;
+            width:400px;
+            margin:auto;
+            border-radius:15px;
+            box-shadow:0 0 20px rgba(0,0,0,0.2);
+        }
+        h1{color:#11998e;}
+        button{
+            padding:10px 20px;
+            background:#11998e;
+            color:white;
+            border:none;
+            border-radius:5px;
+            font-size:18px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h1>💰 Fake Currency Detection</h1>
+
+    <form method="POST" enctype="multipart/form-data" action="/detect/">
+        {% csrf_token %}
+        <input type="file" name="image" required><br><br>
+        <button type="submit">Detect Currency</button>
+    </form>
+</div>
+
+</body>
+</html>

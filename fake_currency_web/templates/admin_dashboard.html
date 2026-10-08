@@ -1,0 +1,241 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:url("https://images.unsplash.com/photo-1554224155-6726b3ff858f") no-repeat center/cover;
+    color:white;
+}
+
+/* dark overlay */
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.88);
+    z-index:-1;
+}
+
+/* NAVBAR */
+.navbar{
+    position:fixed;
+    top:0;
+    width:100%;
+    height:60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 40px;
+    background:black;
+}
+
+.navbar h2{ color:#ffd600; }
+
+.logout{
+    color:#ff5252;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+/* MAIN AREA */
+.wrapper{
+    padding-top:90px;
+    text-align:center;
+}
+
+.title{
+    font-size:32px;
+    color:#ffd600;
+    margin-bottom:30px;
+}
+
+/* DASHBOARD CARDS */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:30px;
+    padding:40px;
+}
+
+.card{
+    background:rgba(0,0,0,0.85);
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 0 30px rgba(0,255,100,0.25);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-8px);
+    box-shadow:0 0 40px rgba(0,255,100,0.7);
+}
+
+.card h3{
+    color:#00e676;
+    margin-bottom:10px;
+}
+
+.card p{
+    color:#ccc;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:15px;
+    padding:10px 18px;
+    border-radius:10px;
+    background:linear-gradient(135deg,#00e676,#ffd600);
+    color:black;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+/* CHART SECTION TITLE */
+.section-title{
+    color:#ffd600;
+    text-align:center;
+    margin-top:30px;
+    margin-bottom:10px;
+    font-size:26px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>💰 Fake Currency Detection</h2>
+    <a href="/logout/" class="logout">Logout</a>
+</div>
+
+<div class="wrapper">
+
+    <h1 class="title">👩‍💼 Admin Dashboard</h1>
+
+    <!-- DASHBOARD CARDS -->
+    <div class="grid">
+
+        <div class="card">
+            <h3>👥 Manage Users</h3>
+            <p>View and control all registered users.</p>
+            <a href="/admin/accounts/customuser/" class="btn">Open</a>
+        </div>
+
+        <div class="card">
+            <h3>🧾 Detection History</h3>
+            <p>Check all uploaded currency results.</p>
+            <a href="/admin/detector/detectionhistory/" class="btn">Open</a>
+        </div>
+
+        <div class="card">
+            <h3>📊 System Analytics</h3>
+            <p>View system statistics and usage.</p>
+            <a href="/admin/" class="btn">Open</a>
+        </div>
+
+    </div>
+
+    <!-- CHART SECTION -->
+    <h2 class="section-title">📊 Analytics Dashboard</h2>
+
+    <div class="grid">
+
+        <div class="card">
+            <h3>📊 Detection Result Status</h3>
+            <canvas id="pieChart"></canvas>
+        </div>
+
+        <div class="card">
+            <h3>📈 Last 1 Month Activity</h3>
+            <canvas id="lineChart"></canvas>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- CHART JS -->
+<script>
+    const labels = JSON.parse('{{ labels|escapejs }}');
+    const values = JSON.parse('{{ values|escapejs }}');
+    const colors = JSON.parse('{{ colors|escapejs }}');
+    const days = JSON.parse('{{ days|escapejs }}');
+    const counts = JSON.parse('{{ counts|escapejs }}');
+
+    // PIE CHART
+    new Chart(document.getElementById('pieChart'), {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: values,
+                backgroundColor: colors,
+                borderColor: '#111',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff'
+                    }
+                }
+            }
+        }
+    });
+
+    // LINE CHART
+    new Chart(document.getElementById('lineChart'), {
+        type: 'line',
+        data: {
+            labels: days,
+            datasets: [{
+                label: "Detections",
+                data: counts,
+                borderColor: '#64b5f6',
+                backgroundColor: 'rgba(100,181,246,0.18)',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            scales: {
+                x: {
+                    ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255,255,255,0.12)' }
+                },
+                y: {
+                    ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255,255,255,0.12)' }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: {
+                        color: '#ffffff'
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

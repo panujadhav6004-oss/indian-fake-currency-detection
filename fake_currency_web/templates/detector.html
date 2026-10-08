@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Currency Detector</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Poppins;
+}
+
+body{
+    min-height:100vh;
+    background:url("https://images.unsplash.com/photo-1580519542036-c47de6196ba5") no-repeat center/cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.75);
+}
+
+.card{
+    position:relative;
+    z-index:1;
+    background:rgba(0,0,0,0.82);
+    padding:35px;
+    width:500px;
+    border-radius:18px;
+    text-align:center;
+    color:white;
+    box-shadow:0 0 25px rgba(0,0,0,0.5);
+}
+
+h1{
+    color:#FFD700;
+    margin-bottom:15px;
+}
+
+input,
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:8px;
+    border:none;
+}
+
+input{
+    background:white;
+}
+
+button{
+    background:linear-gradient(45deg,#FFD700,#FF9800);
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+button:hover{
+    transform:scale(1.03);
+}
+
+video,
+canvas,
+img{
+    width:100%;
+    border-radius:10px;
+    margin-top:15px;
+}
+
+.result-box{
+    margin-top:20px;
+    background:rgba(255,255,255,0.08);
+    padding:18px;
+    border-radius:12px;
+    text-align:left;
+}
+
+.result{
+    margin-top:15px;
+    font-size:22px;
+    font-weight:bold;
+    color:#00e676;
+    text-align:center;
+}
+
+.info{
+    margin-top:10px;
+    font-size:18px;
+    color:#ffffff;
+}
+
+.serial{
+    margin-top:10px;
+    background:#111;
+    padding:10px;
+    border-radius:8px;
+    color:#00ffcc;
+    word-wrap:break-word;
+}
+
+.link{
+    margin-top:20px;
+    display:block;
+    color:#00e676;
+    text-decoration:none;
+    font-weight:bold;
+}
+
+hr{
+    margin:20px 0;
+    border:1px solid rgba(255,255,255,0.2);
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h1>Currency Detector</h1>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <input type="file" name="note_image" required>
+
+        <button type="submit">
+            Upload & Detect
+        </button>
+    </form>
+
+    <hr>
+
+    <h3>OR Use Camera</h3>
+
+    <video id="video" autoplay></video>
+
+    <button onclick="startCamera()">
+        Start Camera
+    </button>
+
+    <button onclick="capturePhoto()">
+        Capture Photo
+    </button>
+
+    <canvas id="canvas" style="display:none;"></canvas>
+
+    <form method="POST" id="cameraForm">
+        {% csrf_token %}
+
+        <input type="hidden" name="camera_image" id="camera_image">
+
+        <button type="submit">
+            Detect Captured Image
+        </button>
+    </form>
+
+    {% if file_url %}
+
+        <img src="{{ file_url }}">
+
+        <div class="result-box">
+
+            <div class="result">
+                {{ prediction }}
+            </div>
+
+            <div class="info">
+                <b>Country:</b> {{ country }}
+            </div>
+
+            <div class="info">
+                <b>Currency:</b> {{ currency_name }}
+            </div>
+
+            <div class="info">
+                <b>Value:</b>
+                {% if currency_value and currency_value != "Not Detected" %}
+                    ₹{{ currency_value }}
+                {% else %}
+                    Not Detected
+                {% endif %}
+            </div>
+
+            <div class="info">
+                <b>Serial Number:</b>
+            </div>
+
+            <div class="serial">
+                {{ serial_number }}
+            </div>
+
+        </div>
+
+    {% endif %}
+
+    <a href="/dashboard/" class="link">
+        Back to Dashboard
+    </a>
+
+</div>
+
+<script>
+let video = document.getElementById("video");
+let canvas = document.getElementById("canvas");
+
+function startCamera(){
+    navigator.mediaDevices.getUserMedia({
+        video:true
+    })
+    .then(stream => {
+        video.srcObject = stream;
+    });
+}
+
+function capturePhoto(){
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    canvas.getContext('2d').drawImage(
+        video,
+        0,
+        0
+    );
+
+    let imageData = canvas.toDataURL("image/png");
+
+    document.getElementById("camera_image").value = imageData;
+
+    alert("Photo captured! Now click Detect.");
+}
+</script>
+
+</body>
+</html>
