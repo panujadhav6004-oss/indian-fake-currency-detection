@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - Fake Currency Detection</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:url("https://images.unsplash.com/photo-1554224155-6726b3ff858f") no-repeat center/cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* dark overlay */
+body::before{
+    content:"";
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.78);
+}
+
+/* CENTER CARD */
+.card{
+    position:relative;
+    width:380px;
+    padding:40px;
+    background:rgba(0,0,0,0.70);
+    backdrop-filter:blur(14px);
+    border-radius:18px;
+    box-shadow:0 0 30px rgba(0,255,100,0.25);
+    text-align:center;
+    color:white;
+}
+
+/* headings */
+h1{
+    color:#ffd600;
+    margin-bottom:5px;
+}
+h3{
+    margin-bottom:20px;
+    font-weight:300;
+}
+
+/* inputs */
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:none;
+    border-radius:8px;
+    outline:none;
+}
+
+/* button */
+button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    background:linear-gradient(135deg,#00c853,#ffd600);
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
+}
+button:hover{ transform:scale(1.05); }
+
+/* link */
+a{
+    color:#00e676;
+    text-decoration:none;
+    display:block;
+    margin-top:15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+    <h1>Fake Currency Detection</h1>
+    <h3>Login</h3>
+    {% if messages %}
+        {% for message in messages %}
+            <p style="color:#00e676;">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+    {% csrf_token %}
+
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+
+    <button type="submit">Login</button>
+</form>
+
+    <a href="/register/">Create new account</a>
+</div>
+
+</body>
+</html>
