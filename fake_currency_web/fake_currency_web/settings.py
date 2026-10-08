@@ -1,11 +1,20 @@
 import os
 from pathlib import Path
 
+from django.core.exceptions import ImproperlyConfigured
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-development-key-change-me')
-DEBUG = True
-ALLOWED_HOSTS = []
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+if not SECRET_KEY:
+    raise ImproperlyConfigured('Set the DJANGO_SECRET_KEY environment variable.')
+
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False').strip().lower() in {'1', 'true', 'yes'}
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+    if host.strip()
+]
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -81,8 +90,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -105,4 +114,3 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome Admin!",
     "copyright": "Fake Currency Detection System",
 }
-
