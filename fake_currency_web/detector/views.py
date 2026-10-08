@@ -19,6 +19,7 @@ from django.contrib.auth import (
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
+from django.views.decorators.http import require_POST
 
 from django.conf import settings
 from django.core.files.base import ContentFile
@@ -427,7 +428,7 @@ def history(request):
 
     sort = request.GET.get("sort")
 
-    records = DetectionHistory.objects.all()
+    records = DetectionHistory.objects.filter(user=request.user)
 
     # FILTER
     if filter_type == "Real":
@@ -453,11 +454,14 @@ def history(request):
 # =========================================================
 # DELETE SINGLE RECORD
 # =========================================================
+@login_required
+@require_POST
 def delete_record(request, id):
 
     record = get_object_or_404(
         DetectionHistory,
-        id=id
+        id=id,
+        user=request.user,
     )
 
     record.delete()
@@ -468,9 +472,11 @@ def delete_record(request, id):
 # =========================================================
 # DELETE ALL HISTORY
 # =========================================================
+@login_required
+@require_POST
 def delete_all_history(request):
 
-    DetectionHistory.objects.all().delete()
+    DetectionHistory.objects.filter(user=request.user).delete()
 
     return redirect("history")
 
@@ -507,6 +513,7 @@ def generate_pie_chart(real, fake):
 # =========================================================
 # EXPORT PDF
 # =========================================================
+@login_required
 def export_pdf(request):
 
     filename = (
@@ -537,7 +544,7 @@ def export_pdf(request):
 
     elements.append(Spacer(1, 12))
 
-    records = DetectionHistory.objects.all()
+    records = DetectionHistory.objects.filter(user=request.user)
 
     total = records.count()
 
@@ -610,6 +617,7 @@ def export_pdf(request):
 # =========================================================
 # EXPORT EXCEL
 # =========================================================
+@login_required
 def export_excel(request):
 
     wb = openpyxl.Workbook()
@@ -625,7 +633,7 @@ def export_excel(request):
         "Date"
     ])
 
-    for r in DetectionHistory.objects.all():
+    for r in DetectionHistory.objects.filter(user=request.user):
 
         ws.append([
             r.id,
