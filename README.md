@@ -1,15 +1,69 @@
 # Indian Fake Currency Detection
 
-A Django web app and CNN code for classifying Indian currency note images.
+A student project that combines a Django web app, a CNN image classifier, and OCR helpers to inspect Indian currency note images.
 
-## Setup
+## What it includes
 
-1. Create and activate a Python virtual environment.
-2. Install dependencies: `pip install -r requirements.txt`.
-3. Install Tesseract OCR and update the executable path in `fake_currency_web/detector/cnn_predict.py` if needed.
-4. From `fake_currency_web/detector`, run `python restore_model.py` to rebuild the model file from its two uploaded parts.
-5. From `fake_currency_web`, run `python manage.py migrate` and then `python manage.py runserver`.
+- User registration and login
+- Image upload and camera capture for a detection attempt
+- CNN output labelled `Real`, `Fake`, or `Uncertain`
+- OCR-based currency value and serial-number extraction
+- Per-user detection history and an admin dashboard
+- Model training and prediction scripts in `currency_model/`
 
-The model is stored in two parts under `fake_currency_web/detector/` to fit GitHub upload limits. Training datasets, user-uploaded media, the local SQLite database, and the virtual environment are excluded from Git because they contain local/generated or potentially private data. Add training data locally under the expected dataset folder before running training scripts.
+## Important limitations
 
-Set `DJANGO_SECRET_KEY`, `EMAIL_HOST_USER`, and `EMAIL_HOST_PASSWORD` as environment variables for local configuration. Do not commit real credentials.
+This is an educational prototype, not a bank, government, or forensic verification tool. A model prediction cannot establish whether a banknote is genuine. Lighting, image quality, note condition, unseen designs, and the training data can affect results. The repository does not include a measured test-set accuracy, so no accuracy claim is made here. Always verify a note through an authorized bank or official process.
+
+OCR values and serial numbers are best-effort text extraction and may be incorrect. The subscription and payment screens are a demo flow; there is no payment gateway or real payment processing.
+
+Uploaded images are saved in the app's local `media/` directory. Use only images you are authorized to process, and do not use real personal or financial information in a public demo.
+
+## Requirements
+
+- Python version compatible with the pinned packages in `requirements.txt`
+- Tesseract OCR installed separately
+- The model files from this repository
+
+## Setup (Windows PowerShell)
+
+From the repository root:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+Set a local Django secret key and enable debug mode for local development:
+
+```powershell
+$env:DJANGO_SECRET_KEY = python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+$env:DJANGO_DEBUG = "True"
+```
+
+Install Tesseract OCR. If it is not at `C:\Program Files\Tesseract-OCR\tesseract.exe`, set `TESSERACT_CMD` to its executable path.
+
+The model is split into two files to fit GitHub's per-file upload limit. From the repository root, rebuild it once:
+
+```powershell
+cd fake_currency_web\detector
+python restore_model.py
+cd ..\..
+```
+
+Initialize the database and start the development server:
+
+```powershell
+cd fake_currency_web
+python manage.py migrate
+python manage.py runserver
+```
+
+Open `http://127.0.0.1:8000/` in a browser.
+
+## Configuration
+
+`DJANGO_SECRET_KEY` is required. For a deployed environment, set a unique secret key, leave `DJANGO_DEBUG` unset or set it to `False`, and set `DJANGO_ALLOWED_HOSTS` to the deployment host names as a comma-separated list. Never commit secrets.
+
+The `.gitignore` excludes virtual environments, local databases, uploaded media, and both raw and cleaned training datasets. Add authorized training images locally in the folder structure expected by the training scripts; the dataset is not included in this repository.
